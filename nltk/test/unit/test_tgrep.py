@@ -343,7 +343,7 @@ class TestSequenceFunctions(unittest.TestCase):
         )
         self.assertEqual(list(tgrep.tgrep_positions('x', [tree], False)), [[]])
 
-    def tests_rel_dominance(self):
+    def test_rel_dominance(self):
         '''
         Test matching nodes based on dominance relations.
         '''
@@ -472,7 +472,7 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(list(tgrep.tgrep_positions('* $,, B', [tree])), [[(2,)]])
         self.assertEqual(list(tgrep.tgrep_positions('* $ B', [tree])), [[(0,), (2,)]])
 
-    def tests_rel_indexed_children(self):
+    def test_rel_indexed_children(self):
         '''
         Test matching nodes based on their index in their parent node.
         '''
