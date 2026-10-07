@@ -8,10 +8,11 @@ See also nltk/test/tokenize.doctest
 import unittest
 
 from nose import SkipTest
-from nose.tools import assert_equal
+from nose.tools import assert_equal, assert_raises
 
 from nltk.tokenize import (
     punkt,
+    sent_tokenize,
     word_tokenize,
     TweetTokenizer,
     NLTKWordTokenizer,
@@ -22,6 +23,20 @@ from nltk.tokenize import (
 
 
 class TestTokenize(unittest.TestCase):
+
+    def test_sent_tokenize_rejects_path_like_language(self):
+        """
+        Punkt model names must not be path-like resource names.
+        """
+        for language in ("../english", "..\\english", "", ".", ".."):
+            assert_raises(ValueError, sent_tokenize, "Hello.", language)
+
+    def test_word_tokenize_rejects_path_like_language(self):
+        """
+        word_tokenize must validate language before sentence tokenization.
+        """
+        assert_raises(ValueError, word_tokenize, "Hello.", "../../tmp/evil")
+
     def test_tweet_tokenizer(self):
         """
         Test TweetTokenizer using words with special and accented characters.
