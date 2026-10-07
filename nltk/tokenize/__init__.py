@@ -60,6 +60,7 @@ tokenization, see the other methods provided in this package.
 For further information, please see Chapter 3 of the NLTK book.
 """
 
+import os
 import re
 
 from nltk.data import load
@@ -93,6 +94,19 @@ from nltk.tokenize.sonority_sequencing import SyllableTokenizer
 
 
 # Standard sentence tokenizer.
+def _get_punkt_tokenizer(language):
+    if not isinstance(language, str):
+        raise TypeError("language must be a string")
+    if (
+        language in ("", os.curdir, os.pardir)
+        or os.path.basename(language) != language
+        or "/" in language
+        or "\\" in language
+    ):
+        raise ValueError("language must be a valid Punkt model name")
+    return load("tokenizers/punkt/{0}.pickle".format(language))
+
+
 def sent_tokenize(text, language="english"):
     """
     Return a sentence-tokenized copy of *text*,
@@ -103,7 +117,7 @@ def sent_tokenize(text, language="english"):
     :param text: text to split into sentences
     :param language: the model name in the Punkt corpus
     """
-    tokenizer = load("tokenizers/punkt/{0}.pickle".format(language))
+    tokenizer = _get_punkt_tokenizer(language)
     return tokenizer.tokenize(text)
 
 
