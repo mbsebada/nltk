@@ -14,6 +14,7 @@ from nltk.tokenize import (
     punkt,
     word_tokenize,
     TweetTokenizer,
+    NLTKWordTokenizer,
     StanfordSegmenter,
     TreebankWordTokenizer,
     SyllableTokenizer,
@@ -127,6 +128,18 @@ class TestTokenize(unittest.TestCase):
                     'tokenized', 'but', 'dotdotdot', '...', 'did', '?',
                     'How', 'about', 'manydots', '.....']
         self.assertEqual(word_tokenize(text), expected)
+
+    def test_destructive_tokenizer_punctuation_regex_not_redos(self):
+        """
+        Ensure final-period punctuation does not use overlapping whitespace quantifiers.
+        """
+        tokenizer = NLTKWordTokenizer()
+        final_period_pattern = tokenizer.PUNCTUATION[0][0].pattern
+        closing_punctuation = final_period_pattern.split("]*")[0].rsplit("[", 1)[1]
+        self.assertNotIn(" ", closing_punctuation)
+        self.assertEqual(
+            tokenizer.tokenize("a." + " " * 1000 + "X"), ["a.", "X"]
+        )
 
     def test_remove_handle(self):
         """
